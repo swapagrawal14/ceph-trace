@@ -363,6 +363,7 @@ function updateStep() {
     $('stepDef').textContent = 'Drag any point to refine it, or tap a chip below to re-place a landmark.';
     $('stepFind').textContent = 'Open the Analysis tab for your values, quick read and export.';
   }
+  $('stepInfo').hidden = !L;
   $('chips').innerHTML = LANDMARKS.map((l, i) => `<button class="chip ${T.P[l.id] ? 'done' : ''} ${i === T.cur ? 'cur' : ''}" data-i="${i}">${l.id}</button>`).join('');
   $('chips').querySelectorAll('.chip').forEach(c => c.onclick = () => { T.cur = +c.dataset.i; updateStep(); const p = T.P[LANDMARKS[T.cur].id]; if (p) focusOn(p, 2.2); });
   const cc = $('calibCard');
@@ -438,9 +439,11 @@ function renderStory() {
     <div class="lbl">How to find it</div><p>${L.find}</p>
     <div class="lbl">Why it matters</div><p>${L.why}</p>
     <div class="hook">💡 ${L.trick}</div>
+    <button class="infoThumb" id="exInfo"><img src="assets/info/${L.id}.jpg" alt="${L.name} infographic" loading="lazy"><span>Open ✦</span></button>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="exPrev">‹ Prev</button><button class="btn ink" id="exNext">Next ›</button>
     </div>`;
+  $('exInfo').onclick = () => openInfo(L.id);
   $('exPrev').onclick = () => selectExplore(LANDMARKS[(i + LANDMARKS.length - 1) % LANDMARKS.length].id, false);
   $('exNext').onclick = () => selectExplore(LANDMARKS[(i + 1) % LANDMARKS.length].id, false);
 }
@@ -625,3 +628,21 @@ function toggleNorms() {
     norms[inp.dataset.k][+inp.dataset.i] = v; localStorage.setItem('cephNorms', JSON.stringify(norms)); compute(); });
   $('normReset').onclick = () => { norms = JSON.parse(JSON.stringify(DEFAULT_NORMS)); localStorage.removeItem('cephNorms'); compute(); ed.hidden = true; toggleNorms(); };
 }
+
+// ================= infographic viewer =================
+let infoId = null;
+function openInfo(id) {
+  infoId = id; const L = LM[id];
+  $('infoImg').src = `assets/info/${id}.jpg`; $('infoImg').alt = `${L.name}: how to find it`;
+  $('imDl').href = `assets/info/${id}.jpg`; $('imDl').setAttribute('download', `ceph-trace-${id}.jpg`);
+  $('infoModal').hidden = false;
+}
+function stepInfo(d) { const i = LANDMARKS.findIndex(l => l.id === infoId); openInfo(LANDMARKS[(i + d + LANDMARKS.length) % LANDMARKS.length].id); }
+document.addEventListener('DOMContentLoaded', () => {
+  $('imClose').onclick = () => $('infoModal').hidden = true;
+  $('infoModal').onclick = e => { if (e.target.id === 'infoModal') $('infoModal').hidden = true; };
+  $('imPrev').onclick = () => stepInfo(-1); $('imNext').onclick = () => stepInfo(1);
+  $('stepInfo').onclick = () => { const L = LANDMARKS[T.cur]; if (L) openInfo(L.id); };
+  document.addEventListener('keydown', e => { if ($('infoModal').hidden) return;
+    if (e.key === 'Escape') $('infoModal').hidden = true; if (e.key === 'ArrowRight') stepInfo(1); if (e.key === 'ArrowLeft') stepInfo(-1); });
+});

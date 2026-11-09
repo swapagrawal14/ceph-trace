@@ -29,6 +29,7 @@ Ortho isn't a boring subject. It just gets taught like one: a 40-page chapter, a
 | 📊 **Live analysis** | 21 measurements across Steiner, Downs, Tweed and Wits, each with a norm range bar and a one-line "what this means". |
 | 🧭 **Quick read** | Skeletal class (ANB, cross-checked with Wits), growth pattern, and upper and lower incisor inclination at a glance. |
 | ✦ **Learn mode** | Explore every landmark on a real ceph: definition, how to find it, why it matters, and a memory hook. |
+| 🖼 **Infographics** | A 5-panel "how to find it" card for all 18 landmarks: a doodle of the idea, where it sits, a zoom, step by step, and the common mistake. Downloadable. |
 | 🎯 **Quiz** | 10 random landmarks. Tap where you think each one is. Within 2 mm is a bullseye. |
 | 🧾 **Export** | A clean PNG report (traced ceph + all values) and a CSV with values and landmark coordinates. |
 | 🔒 **Private** | Everything runs in your browser. The radiograph never leaves your device. |
@@ -41,6 +42,8 @@ Most of us don't struggle with the maths. We struggle with *finding the point*. 
 - **How to find it**: what to actually look for on the film
 - **Why it matters**: which measurements break if you misplace it
 - **Memory hook**: e.g. *"A is Above (maxilla), B is Below (mandible)"*
+
+<p align="center"><img src="assets/info/S.jpg" width="32%" /> <img src="assets/info/Go.jpg" width="32%" /> <img src="assets/info/B.jpg" width="32%" /></p>
 
 Then the **quiz** hides all the points and asks you to find them. You get your error in mm and a "revise next" list at the end.
 
@@ -75,7 +78,8 @@ style.css      flat gouache design system
 sketch.js      p5.js canvas: tracing, loupe, explore, quiz, export
 analysis.js    landmarks, learning content, measurements, norms
 demo.js        demo ceph landmarks + ruler calibration
-assets/        demo ceph, fonts, banner, screenshots
+assets/        demo ceph, fonts, banner, screenshots, doodles, infographics
+tools/         infographic.html (renders the 18 infographic cards)
 lib/p5.min.js  p5.js 1.9.4 (bundled, works offline)
 ```
 

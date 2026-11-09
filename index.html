@@ -113,7 +113,7 @@
             </div>
           </div>
           <p id="stepDef"></p>
-          <div class="find"><b>How to find it</b><span id="stepFind"></span></div>
+          <div class="find"><b>How to find it</b><span id="stepFind"></span><button class="btn sm sun infoBtn" id="stepInfo">See the infographic ✦</button></div>
           <div class="ref">
             <canvas id="refCv" width="320" height="190"></canvas>
             <span>On a real ceph</span>
@@ -177,6 +177,17 @@
   </div>
 </div>
 
+<div id="infoModal" hidden>
+  <div class="imBox">
+    <img id="infoImg" alt="" />
+    <div class="row imRow">
+      <button class="btn" id="imPrev">‹</button>
+      <a class="btn sun" id="imDl" download>Download</a>
+      <button class="btn" id="imNext">›</button>
+      <button class="btn ink" id="imClose">Close</button>
+    </div>
+  </div>
+</div>
 <script src="analysis.js"></script>
 <script src="demo.js"></script>
 <script src="sketch.js"></script>

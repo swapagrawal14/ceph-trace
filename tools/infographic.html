@@ -1,0 +1,149 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../fonts.css">
+<style>
+:root{--sky:#6F9BEA;--sun:#E5482F;--paper:#FFF8EC;--cream:#F8ECD7;--ink:#17171C;--ink2:#3B3B46;--blush:#F6B9B4;--lilac:#C8B3EA;--pink:#F2A0C0;--mustard:#F3B33D;--mint:#86D3A7;--cobalt:#2340B8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1350px;overflow:hidden;background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink)}
+.card{position:relative;width:1080px;height:1350px;padding:0 36px 30px}
+.head{position:relative;margin:0 -36px;height:190px;background:var(--sky);border-bottom:4px solid var(--ink);padding:34px 36px;display:flex;gap:22px;align-items:center;overflow:hidden}
+.sunD{position:absolute;right:-40px;top:-50px;width:230px;height:230px;border-radius:50%;background:var(--sun)}
+.cloud{position:absolute;right:190px;top:110px;width:140px;height:44px;background:var(--paper);border-radius:30px}
+.cloud::before{content:"";position:absolute;left:30px;top:-26px;width:70px;height:60px;border-radius:50%;background:var(--paper)}
+.dot{position:relative;flex:none;min-width:116px;height:116px;padding:0 14px;border-radius:999px;border:4px solid var(--ink);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:900;font-size:44px;box-shadow:5px 5px 0 var(--ink)}
+.ht{position:relative}
+.grp{font-weight:700;font-size:20px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);text-shadow:2px 2px 0 var(--ink)}
+h1{font-family:Fraunces,serif;font-weight:900;font-size:68px;line-height:1;color:var(--paper);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;text-shadow:4px 4px 0 var(--ink);font-variation-settings:"SOFT" 100}
+.sub{font-weight:700;font-size:21px;margin-top:6px}
+.grid{display:grid;grid-template-columns:520px 1fr;grid-template-rows:600px 330px;gap:22px;margin-top:26px}
+.p{position:relative;border:4px solid var(--ink);border-radius:28px;overflow:hidden;box-shadow:6px 6px 0 var(--ink);background:#fff}
+.n{position:absolute;left:14px;top:14px;z-index:2;background:var(--paper);border:3px solid var(--ink);border-radius:999px;padding:4px 14px;font-weight:700;font-size:19px}
+.p.doodle{grid-row:1/2;background:var(--sky)}
+.p.doodle img,.p.doodle svg{width:100%;height:100%;object-fit:cover;display:block}
+.right{display:grid;grid-template-rows:1fr 1fr;gap:22px}
+.p canvas{width:100%;height:100%;display:block;background:#141B3D}
+.steps{background:var(--cream);padding:66px 26px 20px}
+.steps ol{list-style:none;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding-left:56px;font-size:25px;line-height:1.3;font-weight:500;margin-bottom:14px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-2px;width:38px;height:38px;border-radius:50%;background:var(--sun);color:var(--paper);border:3px solid var(--ink);display:grid;place-items:center;font-weight:900;font-size:19px}
+.mist .cap{position:absolute;left:0;right:0;bottom:0;background:var(--blush);border-top:4px solid var(--ink);padding:10px 16px;font-size:19px;font-weight:600;line-height:1.25}
+.mist canvas{height:calc(100% - 0px)}
+.foot{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.hook{background:var(--mustard);border:4px solid var(--ink);border-radius:24px;padding:16px 20px;box-shadow:6px 6px 0 var(--ink)}
+.why{background:var(--lilac);border:4px solid var(--ink);border-radius:24px;padding:16px 20px;box-shadow:6px 6px 0 var(--ink)}
+.foot b{display:block;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.foot p{font-size:20px;line-height:1.28;font-weight:600}
+.brand{position:absolute;left:36px;right:36px;bottom:12px;display:flex;justify-content:space-between;font-size:14px;color:var(--ink2);font-weight:600}
+</style></head><body>
+<div class="card" id="card"></div>
+<script src="../analysis.js"></script>
+<script src="../demo.js"></script>
+<script>
+const GROUP_COL={'Cranial base':'#E5482F','Maxilla':'#F3B33D','Mandible':'#C8B3EA','Teeth':'#86D3A7'};
+const id=new URLSearchParams(location.search).get('id')||'S';
+const L=LANDMARKS.find(l=>l.id===id), P=DEMO.P;
+// common mistake: offset in demo image px (about 5.3 px per mm) + caption
+const MIST={
+ S:[0,19,'Marked the floor of the cup. Sella is the centre of the cup.'],
+ N:[34,4,'Placed on the soft-tissue nose. Nasion is on bone.'],
+ Or:[-6,-34,'Placed too high on the rim. Take the lowest point of the orbit floor.'],
+ Po:[58,40,'Took the condyle head for the ear. Porion is the top of the ear canal.'],
+ A:[46,-38,'Marked ANS (the spine tip). A point is lower, in the deepest dip.'],
+ B:[8,62,'Slid onto the chin bulge (that is Pog). B is the dip above it.'],
+ Pog:[38,4,'Picked the soft-tissue chin. Pog is on the bony chin.'],
+ Gn:[-23,13,'Slid down to the lowest point (that is Me). Gn is halfway.'],
+ Me:[22,-28,'Stopped at the chin corner (that is Gn). Me is the lowest point.'],
+ Go:[-30,-70,'Eyeballed a spot on the ramus. Bisect the angle instead.'],
+ U1T:[-14,-6,'Traced the less prominent incisor. Use the most forward one.'],
+ U1A:[12,38,'Stopped where the root fades. Extend the long axis to the apex.'],
+ U1L:[-12,22,'Marked the incisal edge. The labial point is the crown bulge.'],
+ L1T:[15,7,'Confused it with the upper tip. The lower tip sits just behind.'],
+ L1A:[34,6,'Apex poking out of the symphysis. Keep it between the cortices.'],
+ L1L:[-8,-20,'Marked the tip. The labial point is the front bulge of the crown.'],
+ Pm:[92,6,'Used the incisor overlap. The functional plane runs through premolars and molars.'],
+ Mo:[-55,4,'Picked the second molar. Use the first molars\' mesial cusps.'],
+};
+const SVG_DOODLE={U1L:1,L1L:1,L1T:1,B:1};
+function incisorMap(hi){
+  const pts={U1A:[170,46],U1T:[250,332],U1L:[268,268],L1T:[230,314],L1A:[192,498],L1L:[247,368]};
+  let s=`<svg viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="560" fill="#6F9BEA"/>
+  <path d="M60 0 H260 C250 90 250 150 240 210 C200 200 150 170 60 160Z" fill="#C8B3EA" stroke="#17171C" stroke-width="5"/>
+  <path d="M110 560 C120 470 140 420 175 395 C215 380 240 400 262 430 C275 470 280 520 290 560Z" fill="#F3B33D" stroke="#17171C" stroke-width="5"/>
+  <path d="M300 180 C350 175 400 200 400 230 V300 C370 310 330 300 300 290 C282 270 282 205 300 180Z" fill="#F2A0C0" stroke="#17171C" stroke-width="5"/>
+  <path d="M300 345 C330 330 380 340 400 350 V440 C370 445 330 430 300 410 C285 390 285 360 300 345Z" fill="#F2A0C0" stroke="#17171C" stroke-width="5"/>
+  <path d="M230 312 C245 330 250 372 242 404 C232 444 207 482 192 500 C181 480 182 440 186 410 C190 378 206 338 230 312Z" fill="#FFF8EC" stroke="#17171C" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M170 44 C200 64 242 182 268 266 C276 292 262 320 250 334 C238 324 222 302 214 278 C205 252 196 216 186 196 C174 150 158 84 170 44Z" fill="#FFF8EC" stroke="#17171C" stroke-width="6" stroke-linejoin="round"/>`;
+  const ax=hi.startsWith('U')?[pts.U1A,pts.U1T]:[pts.L1A,pts.L1T];
+  s+=`<line x1="${ax[0][0]}" y1="${ax[0][1]}" x2="${ax[1][0]}" y2="${ax[1][1]}" stroke="#17171C" stroke-width="3" stroke-dasharray="9 8"/>`;
+  for(const [k,[x,y]] of Object.entries(pts)){
+    if(k===hi) s+=`<circle cx="${x}" cy="${y}" r="30" fill="none" stroke="#FFF8EC" stroke-width="4" stroke-dasharray="8 7"/><circle cx="${x}" cy="${y}" r="17" fill="#E5482F" stroke="#17171C" stroke-width="5"/>`;
+    else s+=`<circle cx="${x}" cy="${y}" r="7" fill="#FFF8EC" stroke="#17171C" stroke-width="3" opacity=".8"/>`;
+  }
+  return s+'</svg>';
+}
+function bDoodle(){
+  return `<svg viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="560" fill="#6F9BEA"/>
+  <path d="M210 40 C230 40 246 70 244 110 C242 140 236 160 232 168 L206 166 C200 130 196 80 210 40Z" fill="#FFF8EC" stroke="#17171C" stroke-width="6"/>
+  <path d="M232 160 C238 210 214 240 212 280 C210 320 250 350 262 390 C274 440 240 480 190 486 C140 490 100 470 92 430 C84 380 110 300 120 240 C126 200 140 170 160 160 Z" fill="#FFF8EC" stroke="#17171C" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M120 470 C150 480 200 484 240 470" stroke="#F3B33D" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <line x1="226" y1="140" x2="268" y2="420" stroke="#17171C" stroke-width="3" stroke-dasharray="10 8"/>
+  <path d="M215 280 L248 276" stroke="#17171C" stroke-width="3"/><path d="M240 270 L250 276 L240 283" fill="none" stroke="#17171C" stroke-width="3"/>
+  <circle cx="211" cy="280" r="34" fill="none" stroke="#FFF8EC" stroke-width="4" stroke-dasharray="8 7"/>
+  <circle cx="211" cy="280" r="17" fill="#E5482F" stroke="#17171C" stroke-width="5"/>
+  <circle cx="263" cy="392" r="7" fill="#FFF8EC" stroke="#17171C" stroke-width="3"/>
+  </svg>`;
+}
+function steps(t){ return t.split(/(?<=\.)\s+(?=[A-Z"])/).filter(Boolean).slice(0,4); }
+const col=GROUP_COL[L.group];
+document.getElementById('card').innerHTML=`
+ <div class="head"><div class="sunD"></div><div class="cloud"></div>
+  <div class="dot" style="background:${col};color:${L.group==='Cranial base'?'#FFF8EC':'#17171C'}">${L.id}</div>
+  <div class="ht"><div class="grp">${L.group}</div><h1 style="font-size:${L.name.length>13?52:68}px">${L.name}</h1><div class="sub">How to find it</div></div></div>
+ <div class="grid">
+  <div class="p doodle"><span class="n">1 · The idea</span>${SVG_DOODLE[id]?(id==='B'?bDoodle():incisorMap(id)):`<img src="../assets/doodles/doodle_${id}.jpg">`}</div>
+  <div class="right">
+   <div class="p"><span class="n">2 · Where on the ceph</span><canvas id="c1" width="944" height="556"></canvas></div>
+   <div class="p"><span class="n">3 · Zoom in</span><canvas id="c2" width="944" height="556"></canvas></div>
+  </div>
+  <div class="p steps"><span class="n">4 · Step by step</span><ol>${steps(L.find).map(s=>`<li>${s}</li>`).join('')}</ol></div>
+  <div class="p mist"><span class="n" style="background:#F6B9B4">5 · Common mistake</span><canvas id="c3" width="944" height="556"></canvas><div class="cap">✗ ${MIST[id][2]}</div></div>
+ </div>
+ <div class="foot">
+  <div class="hook"><b>Remember</b><p>${L.trick}</p></div>
+  <div class="why"><b>Why it matters</b><p>${L.why}</p></div>
+ </div>
+ <div class="brand"><span>Ceph Trace · ceph-trace.vercel.app</span><span>Swapnil Agrawal (BDS intern) · Radiograph: ANUG, CC BY-SA 4.0</span></div>`;
+const img=new Image(); img.src='../assets/demo-ceph.jpg';
+img.onload=()=>{
+  const p=P[id];
+  // 2: where — face region with ring
+  crop('c1',930,Math.min(Math.max(p.y-60,380),640),600,{ring:p,r:46,all:true});
+  // 3: zoom
+  crop('c2',p.x,p.y,230,{pt:p,label:L.id});
+  // 5: mistake
+  const m=MIST[id], w={x:p.x+m[0],y:p.y+m[1]};
+  const cx=(p.x+w.x)/2, cy=(p.y+w.y)/2;
+  crop('c3',cx,cy-12,Math.max(230,Math.hypot(m[0],m[1])*2.6),{pt:p,wrong:w,label:L.id});
+  document.body.dataset.ready=1;
+};
+function crop(cid,cx,cy,halfW,o){
+  const cv=document.getElementById(cid),c=cv.getContext('2d'),W=cv.width,H=cv.height;
+  const hw=halfW,hh=hw*H/W,s=W/(2*hw);
+  c.filter='contrast(1.2) brightness(1.03)';
+  c.drawImage(img,cx-hw,cy-hh,2*hw,2*hh,0,0,W,H); c.filter='none';
+  const T=q=>[(q.x-cx+hw)*s,(q.y-cy+hh)*s];
+  if(o.all){ for(const l of LANDMARKS){const [x,y]=T(P[l.id]); c.fillStyle='rgba(255,248,236,.55)'; c.beginPath(); c.arc(x,y,8,0,7); c.fill();} }
+  if(o.ring){ const [x,y]=T(o.ring); c.strokeStyle='#F3B33D'; c.lineWidth=9; c.setLineDash([18,12]); c.beginPath(); c.arc(x,y,o.r*s*1.5,0,7); c.stroke(); c.setLineDash([]);
+    dotAt(c,x,y,22,col); pill(c,x+o.r*s*1.5+14,y,L.id,col); }
+  if(o.wrong){ const [x,y]=T(o.wrong),[a,b]=T(o.pt);
+    c.strokeStyle='#FFF8EC'; c.lineWidth=6; c.setLineDash([14,10]); c.beginPath(); c.moveTo(x,y); c.lineTo(a,b); c.stroke(); c.setLineDash([]);
+    c.lineWidth=18; c.strokeStyle='#17171C'; xmark(c,x,y,30); c.lineWidth=10; c.strokeStyle='#E5482F'; xmark(c,x,y,30); }
+  if(o.pt){ const [x,y]=T(o.pt); c.strokeStyle=col; c.lineWidth=8; c.setLineDash([14,10]); c.beginPath(); c.arc(x,y,54,0,7); c.stroke(); c.setLineDash([]);
+    dotAt(c,x,y,24,col); pill(c,x+68,y,o.wrong?'✓ '+o.label:o.label,col); }
+}
+function xmark(c,x,y,r){c.beginPath();c.moveTo(x-r,y-r);c.lineTo(x+r,y+r);c.moveTo(x+r,y-r);c.lineTo(x-r,y+r);c.stroke();}
+function dotAt(c,x,y,r,f){c.fillStyle=f;c.strokeStyle='#17171C';c.lineWidth=7;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.stroke();c.fillStyle='#17171C';c.beginPath();c.arc(x,y,6,0,7);c.fill();}
+function pill(c,x,y,t,f){c.font='700 44px "DM Sans"';const w=c.measureText(t).width+40;
+  if(x+w>c.canvas.width-8)x=x-w-136; c.fillStyle=f;c.strokeStyle='#17171C';c.lineWidth=6;
+  c.beginPath();c.roundRect(x,y-34,w,68,34);c.fill();c.stroke();c.fillStyle='#17171C';c.textBaseline='middle';c.fillText(t,x+20,y+2);}
+</script></body></html>
