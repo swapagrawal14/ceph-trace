@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Ceph Trace — Digital Cephalometric Tracing</title>
+<meta name="description" content="Upload a lateral ceph, tap landmarks, get Steiner, Downs, Tweed and Wits analysis instantly." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<script src="lib/p5.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <section id="stage">
+    <div id="empty">
+      <div class="logo">Ceph<span>Trace</span></div>
+      <p>Upload a lateral cephalogram to start tracing.</p>
+      <div class="row">
+        <label class="btn primary">Upload ceph<input type="file" accept="image/*" class="fileIn" hidden /></label>
+        <button class="btn" data-act="demo">Try demo</button>
+      </div>
+      <small>Your image stays on your device. Nothing is uploaded.</small>
+    </div>
+    <div id="hud">
+      <button class="icon" data-act="fit" title="Fit">⤢</button>
+      <button class="icon" data-act="zin" title="Zoom in">＋</button>
+      <button class="icon" data-act="zout" title="Zoom out">－</button>
+      <button class="icon" data-act="lines" title="Toggle tracing">◩</button>
+      <button class="icon" data-act="undo" title="Undo">↶</button>
+    </div>
+    <div id="toast"></div>
+  </section>
+
+  <aside id="panel">
+    <header>
+      <div class="logo sm">Ceph<span>Trace</span></div>
+      <div class="row">
+        <label class="btn sm">Upload<input type="file" accept="image/*" class="fileIn" hidden /></label>
+        <button class="btn sm" data-act="calib">Calibrate</button>
+        <button class="btn sm" data-act="reset">Reset</button>
+      </div>
+    </header>
+
+    <div class="card step" id="stepCard">
+      <div class="stepTop"><span id="stepNo">1 / 17</span><span id="calibState" class="pill">Not calibrated</span></div>
+      <div id="stepName">Sella</div>
+      <div id="stepHint">Geometric centre of the sella turcica</div>
+      <div class="row">
+        <button class="btn sm" data-act="prev">‹ Prev</button>
+        <button class="btn sm" data-act="skip">Skip</button>
+        <button class="btn sm" data-act="next">Next ›</button>
+      </div>
+      <div id="chips"></div>
+    </div>
+
+    <details class="card">
+      <summary>Image adjust</summary>
+      <label>Brightness <input type="range" id="bri" min="40" max="200" value="100"></label>
+      <label>Contrast <input type="range" id="con" min="40" max="250" value="120"></label>
+      <label class="chk"><input type="checkbox" id="inv"> Invert</label>
+    </details>
+
+    <div class="card">
+      <div class="resHead">
+        <h3>Analysis</h3>
+        <select id="sex"><option value="F">Female</option><option value="M">Male</option></select>
+      </div>
+      <div id="results"></div>
+      <div class="row">
+        <button class="btn sm primary" data-act="png">Export PNG</button>
+        <button class="btn sm" data-act="csv">Export CSV</button>
+        <button class="btn sm" data-act="norms">Edit norms</button>
+      </div>
+      <div id="normsEd" hidden></div>
+    </div>
+
+    <footer>
+      Educational aid for tracing practice. Verify every landmark and value clinically.<br>
+      Built by Swapnil Agrawal (BDS intern)
+    </footer>
+  </aside>
+</div>
+<script src="analysis.js"></script>
+<script src="sketch.js"></script>
+</body>
+</html>
