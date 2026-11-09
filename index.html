@@ -2,86 +2,183 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Ceph Trace — Digital Cephalometric Tracing</title>
-<meta name="description" content="Upload a lateral ceph, tap landmarks, get Steiner, Downs, Tweed and Wits analysis instantly." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Ceph Trace · Cephalometric tracing that finally makes sense</title>
+<meta name="description" content="Upload a lateral ceph, tap the landmarks, get Steiner, Downs, Tweed and Wits instantly. Learn every landmark with a real radiograph and a tap-to-find quiz." />
+<meta name="theme-color" content="#6F9BEA" />
+<meta property="og:title" content="Ceph Trace" />
+<meta property="og:description" content="Cephalometric tracing that finally makes sense. Trace, analyse, and learn landmarks on a real ceph." />
+<meta property="og:image" content="assets/banner.png" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="fonts.css" />
 <link rel="stylesheet" href="style.css" />
 <script src="lib/p5.min.js"></script>
 </head>
 <body>
-<div id="app">
-  <section id="stage">
-    <div id="empty">
-      <div class="logo">Ceph<span>Trace</span></div>
-      <p>Upload a lateral cephalogram to start tracing.</p>
-      <div class="row">
-        <label class="btn primary">Upload ceph<input type="file" accept="image/*" class="fileIn" hidden /></label>
-        <button class="btn" data-act="demo">Try demo</button>
+
+<!-- ============ HOME ============ -->
+<main id="home">
+  <div class="sky">
+    <div class="heroSun" aria-hidden="true"></div>
+    <svg class="deco" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g fill="#FFF8EC">
+        <path d="M30 70c0-12 10-20 22-18 4-12 22-16 31-5 12-4 24 4 22 16 10 2 12 18 0 20H40c-12 0-16-12-10-13z" />
+        <path d="M230 128c0-9 8-15 17-13 3-9 17-12 24-4 9-3 18 3 17 12 8 1 9 14 0 15h-50c-9 0-12-9-8-10z" />
+        <path d="M120 30c0-7 6-11 12-10 2-7 12-9 17-3 7-2 13 2 12 9 6 1 7 10 0 11h-36c-7 0-9-6-5-7z" opacity=".9" />
+      </g>
+    </svg>
+    <svg class="hills" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 70 C60 20 120 30 170 60 C220 90 280 20 400 50 L400 120 L0 120Z" fill="#C8B3EA" />
+      <path d="M0 95 C80 60 150 70 210 90 C270 110 330 70 400 85 L400 120 L0 120Z" fill="#F2A0C0" />
+      <path d="M0 112 C100 98 200 104 400 106 L400 120 L0 120Z" fill="#FFF8EC" />
+    </svg>
+
+    <div class="heroWrap">
+      <div class="heroText">
+        <span class="tag">for dental students, by a dental student</span>
+        <h1>Ceph<br><em>Trace</em></h1>
+        <p class="lead">Cephalometric tracing that finally makes sense. Tap the landmarks, watch the angles appear, and actually learn what they mean.</p>
       </div>
-      <small>Your image stays on your device. Nothing is uploaded.</small>
+      <figure class="lightbox" id="heroBox">
+        <img src="assets/demo-ceph.jpg" alt="Lateral cephalogram with a sample tracing" />
+        <svg id="heroTrace" viewBox="0 0 1400 1120"></svg>
+        <figcaption>real ceph · live tracing</figcaption>
+      </figure>
     </div>
-    <div id="hud">
-      <button class="icon" data-act="fit" title="Fit">⤢</button>
-      <button class="icon" data-act="zin" title="Zoom in">＋</button>
-      <button class="icon" data-act="zout" title="Zoom out">－</button>
-      <button class="icon" data-act="lines" title="Toggle tracing">◩</button>
-      <button class="icon" data-act="undo" title="Undo">↶</button>
-    </div>
-    <div id="toast"></div>
+  </div>
+
+  <section class="choices">
+    <label class="choice c-sun">
+      <span class="ico">↑</span>
+      <span class="ct"><b>Trace a ceph</b><small>Upload your lateral ceph. Stays on your device.</small></span>
+      <input type="file" accept="image/*" class="fileIn" hidden />
+    </label>
+    <button class="choice c-mustard" data-act="demo">
+      <span class="ico">▶</span>
+      <span class="ct"><b>Try the demo</b><small>A real ceph, already traced. Drag points, see values change.</small></span>
+    </button>
+    <button class="choice c-lilac" data-act="learn">
+      <span class="ico">✦</span>
+      <span class="ct"><b>Learn landmarks</b><small>18 landmarks, how to find each one, and a tap-to-find quiz.</small></span>
+      <span class="badge">students</span>
+    </button>
   </section>
 
-  <aside id="panel">
-    <header>
-      <div class="logo sm">Ceph<span>Trace</span></div>
-      <div class="row">
-        <label class="btn sm">Upload<input type="file" accept="image/*" class="fileIn" hidden /></label>
-        <button class="btn sm" data-act="calib">Calibrate</button>
-        <button class="btn sm" data-act="reset">Reset</button>
-      </div>
-    </header>
+  <section class="features">
+    <div class="feat"><b>18</b><span>landmarks with guides</span></div>
+    <div class="feat"><b>21</b><span>measurements</span></div>
+    <div class="feat"><b>4</b><span>analyses: Steiner, Downs, Tweed, Wits</span></div>
+    <div class="feat"><b>0</b><span>uploads. Runs on your phone.</span></div>
+  </section>
 
-    <div class="card step" id="stepCard">
-      <div class="stepTop"><span id="stepNo">1 / 17</span><span id="calibState" class="pill">Not calibrated</span></div>
-      <div id="stepName">Sella</div>
-      <div id="stepHint">Geometric centre of the sella turcica</div>
-      <div class="row">
-        <button class="btn sm" data-act="prev">‹ Prev</button>
-        <button class="btn sm" data-act="skip">Skip</button>
-        <button class="btn sm" data-act="next">Next ›</button>
-      </div>
-      <div id="chips"></div>
-    </div>
+  <footer class="credit">
+    Made by <b>Swapnil Agrawal</b> (BDS intern) · Educational aid, verify clinically.<br>
+    <span id="demoCredit"></span>
+  </footer>
+</main>
 
-    <details class="card">
-      <summary>Image adjust</summary>
-      <label>Brightness <input type="range" id="bri" min="40" max="200" value="100"></label>
-      <label>Contrast <input type="range" id="con" min="40" max="250" value="120"></label>
-      <label class="chk"><input type="checkbox" id="inv"> Invert</label>
-    </details>
+<!-- ============ WORKSPACE ============ -->
+<div id="work" hidden>
+  <header class="bar">
+    <button class="round" data-act="home" aria-label="Home">←</button>
+    <div class="barTitle"><span class="brand">Ceph<em>Trace</em></span><span id="modePill" class="mpill">Trace</span></div>
+    <label class="round" title="Upload" id="upBtn">↑<input type="file" accept="image/*" class="fileIn" hidden /></label>
+  </header>
 
-    <div class="card">
-      <div class="resHead">
-        <h3>Analysis</h3>
-        <select id="sex"><option value="F">Female</option><option value="M">Male</option></select>
+  <div id="layout">
+    <section id="stage">
+      <div id="hud">
+        <button class="hbtn" data-act="fit" title="Fit">⤢</button>
+        <button class="hbtn" data-act="zin" title="Zoom in">+</button>
+        <button class="hbtn" data-act="zout" title="Zoom out">−</button>
+        <button class="hbtn on" data-act="lines" title="Tracing lines">◩</button>
+        <button class="hbtn" data-act="undo" title="Undo">↶</button>
       </div>
-      <div id="results"></div>
-      <div class="row">
-        <button class="btn sm primary" data-act="png">Export PNG</button>
-        <button class="btn sm" data-act="csv">Export CSV</button>
-        <button class="btn sm" data-act="norms">Edit norms</button>
-      </div>
-      <div id="normsEd" hidden></div>
-    </div>
+      <div id="toast"></div>
+    </section>
 
-    <footer>
-      Educational aid for tracing practice. Verify every landmark and value clinically.<br>
-      Built by Swapnil Agrawal (BDS intern)
-    </footer>
-  </aside>
+    <aside id="panel">
+      <nav class="tabs" id="tabs"></nav>
+
+      <!-- TRACE TAB -->
+      <div class="tab" id="tab-trace">
+        <div class="progress"><div id="progFill"></div><span id="progTxt">0 / 18</span></div>
+
+        <article class="sticker step">
+          <div class="stepHead">
+            <div class="dot" id="stepDot">S</div>
+            <div>
+              <div class="grp" id="stepGrp">Cranial base</div>
+              <h2 id="stepName">Sella</h2>
+            </div>
+          </div>
+          <p id="stepDef"></p>
+          <div class="find"><b>How to find it</b><span id="stepFind"></span></div>
+          <div class="ref">
+            <canvas id="refCv" width="320" height="190"></canvas>
+            <span>On a real ceph</span>
+          </div>
+          <div class="row">
+            <button class="btn" data-act="prev">‹ Back</button>
+            <button class="btn ghost" data-act="skip">Skip</button>
+            <button class="btn ink" data-act="next">Next ›</button>
+          </div>
+          <p class="tip">Tap the image to place. Drag a point to fine-tune; the loupe shows what's under your finger.</p>
+        </article>
+
+        <div class="chips" id="chips"></div>
+
+        <div class="sticker calib" id="calibCard">
+          <div>
+            <b>Ruler calibration</b>
+            <small id="calibTxt">Needed for mm values (U1–NA mm, L1–NB mm, Wits).</small>
+          </div>
+          <button class="btn sun" data-act="calib" id="calibBtn">Calibrate</button>
+        </div>
+
+        <details class="sticker adj">
+          <summary>Image adjust</summary>
+          <label>Brightness <input type="range" id="bri" min="40" max="200" value="100"></label>
+          <label>Contrast <input type="range" id="con" min="40" max="250" value="115"></label>
+          <label class="chk"><input type="checkbox" id="inv"> Invert</label>
+        </details>
+        <button class="btn ghost wide" data-act="reset">Clear all landmarks</button>
+      </div>
+
+      <!-- ANALYSIS TAB -->
+      <div class="tab" id="tab-analysis" hidden>
+        <div class="quick" id="quick"></div>
+        <div class="anaTools">
+          <div class="seg" id="sexSeg"><button data-sex="F" class="on">Female</button><button data-sex="M">Male</button></div>
+          <button class="btn ghost sm" data-act="norms">Edit norms</button>
+        </div>
+        <div id="normsEd" class="sticker" hidden></div>
+        <div id="results"></div>
+        <div class="row exp">
+          <button class="btn sun" data-act="png">Export PNG report</button>
+          <button class="btn" data-act="csv">CSV</button>
+        </div>
+      </div>
+
+      <!-- EXPLORE TAB -->
+      <div class="tab" id="tab-explore" hidden>
+        <article class="sticker story" id="story"></article>
+        <div class="seg wide" id="grpSeg"></div>
+        <div class="lmList" id="lmList"></div>
+      </div>
+
+      <!-- QUIZ TAB -->
+      <div class="tab" id="tab-quiz" hidden>
+        <article class="sticker quiz" id="quizCard"></article>
+      </div>
+
+      <footer class="credit sm">Swapnil Agrawal (BDS intern) · Educational aid, verify clinically.</footer>
+    </aside>
+  </div>
 </div>
+
 <script src="analysis.js"></script>
+<script src="demo.js"></script>
 <script src="sketch.js"></script>
 </body>
 </html>
